@@ -1,0 +1,131 @@
+openapi: 3.0.0
+info:
+  title: 'Auth di Express JS'
+  version: 1.0.0
+  description: 'Latihan RBAC dengan token based auth'
+servers:
+  - url: http://localhost:3000
+    description: 'Development server'
+components:
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'Bearer with JWT Token'
+  schemas:
+    RegisterUser:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+          minLength: 5
+        role:
+          type: string 
+      required:
+        - username
+    LoginUser:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    BadRequest:
+      type: object
+      properties:
+        error:
+          type: string
+paths:
+  /auth/register:
+    post:
+      summary: 'Register user baru'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterUser'
+      responses:
+        '200':
+          description: 'User Created'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      username:
+                        type: string
+                      role:
+                        type: string
+        '400':
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'           
+  /auth/login:
+    post:
+      summary: 'Login user'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginUser'
+      responses:
+        '200':
+          description: 'Login Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: string
+        '400':
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+  /books:
+    get:
+      security:
+        - bearer: []
+      summary: 'Get all books'
+      responses:
+        '200':
+          description: 'Get all books'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        title:
+                          type: string
+                        author:
+                          type: string
+                
+                
+                
+                
+                
